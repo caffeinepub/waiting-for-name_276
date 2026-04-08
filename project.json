@@ -1,0 +1,27 @@
+{
+  "overview": "KidiCare is a pediatric health monitoring system for caregivers. It collects physiological sensor data (GSR, pulse, motion) from ESP32 hardware kits worn by children, runs AI-powered emotion detection, and presents real-time health status on a caregiver dashboard with alerts for stress and distress events.",
+  "features": [
+    "Internet Identity secure login",
+    "Child profile management (create, view, edit, delete)",
+    "ESP32 sensor data ingestion via HTTP endpoint",
+    "AI emotion detection via external model integration",
+    "Real-time caregiver dashboard with 30s polling",
+    "Per-child detail view with HRV, stress, and motion charts (10s updates)",
+    "Toast-style visual alerts for stress > 70 or distressed emotion",
+    "Role-based access control (caregiver, doctor, admin)"
+  ],
+  "category": "health-wellness",
+  "tags": [
+    "health",
+    "pediatric",
+    "monitoring",
+    "iot",
+    "esp32",
+    "emotion-detection",
+    "ai",
+    "caregiver",
+    "real-time",
+    "dashboard"
+  ],
+  "last_updated": "2026-04-08T04:02:58.405Z"
+}

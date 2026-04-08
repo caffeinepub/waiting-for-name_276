@@ -1,0 +1,128 @@
+// Version: 1.0.0
+type ChildId__117089899 = Nat;
+type ChildId__261083552 = ChildId__117089899;
+type ChildId__424107910 = ChildId__117089899;
+type ChildProfileInternal__361688363 =
+  {
+    var age : Nat;
+    caregiverId : Principal;
+    createdAt : Timestamp__750992021;
+    var deviceId : DeviceId__519907577;
+    id : ChildId__261083552;
+    var name : Text
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DeviceId__519907577 = DeviceId__795919761;
+type DeviceId__536497492 = DeviceId__795919761;
+type DeviceId__795919761 = Text;
+type EmotionId__378573059 = EmotionId__9520556;
+type EmotionId__9520556 = Nat;
+type EmotionResult__521108486 =
+  {
+    careSuggestions : [Text];
+    childId : ChildId__424107910;
+    confidence : Float;
+    emotionState : Text;
+    id : EmotionId__378573059;
+    rawResponse : Text;
+    readingId : ReadingId__298656729;
+    timestamp : Timestamp__428453774
+  };
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type ReadingId__189991750 = Nat;
+type ReadingId__298656729 = ReadingId__189991750;
+type SensorReading__626969475 =
+  {
+    accelX : Float;
+    accelY : Float;
+    accelZ : Float;
+    childId : ChildId__424107910;
+    deviceId : DeviceId__536497492;
+    gsr : Float;
+    gyroX : Float;
+    gyroY : Float;
+    gyroZ : Float;
+    hrv : Float;
+    id : ReadingId__298656729;
+    motionIntensity : Float;
+    ppg : Float;
+    stressLevel : Float;
+    timestamp : Timestamp__428453774
+  };
+type Timestamp__301639476 = Int;
+type Timestamp__428453774 = Timestamp__301639476;
+type Timestamp__750992021 = Timestamp__301639476;
+actor {
+  stable aiApiUrl : Text;
+  stable children :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ChildProfileInternal__361688363]];
+      var elementIndex : Nat__490723111
+    };
+  stable emotionResults :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?EmotionResult__521108486]];
+      var elementIndex : Nat__490723111
+    };
+  stable ic :
+    actor {
+      http_request :
+        shared {
+                 body : ?Blob;
+                 headers : [{name : Text; value : Text}];
+                 max_response_bytes : ?Nat64;
+                 method : {#get; #head; #post};
+                 transform :
+                   ?{
+                      context : Blob;
+                      function :
+                        shared query {
+                                       context : Blob;
+                                       response :
+                                         {
+                                           body : Blob;
+                                           headers :
+                                             [{name : Text; value : Text}];
+                                           status : Nat
+                                         }
+                                     } ->
+                          async
+                            {
+                              body : Blob;
+                              headers : [{name : Text; value : Text}];
+                              status : Nat
+                            }
+                    };
+                 url : Text
+               } ->
+          async
+            {
+              body : Blob;
+              headers : [{name : Text; value : Text}];
+              status : Nat
+            }
+    };
+  stable nextChildId : [var Nat];
+  stable nextEmotionId : [var Nat];
+  stable nextReadingId : [var Nat];
+  stable roles :
+    {
+      var root : Node__46230540<Principal, {#admin; #user}>;
+      var size : Nat__490723111
+    };
+  stable sensorReadings :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?SensorReading__626969475]];
+      var elementIndex : Nat__490723111
+    }
+};

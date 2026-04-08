@@ -1,0 +1,113 @@
+type Timestamp = int;
+type SensorReading = 
+ record {
+   accelX: float64;
+   accelY: float64;
+   accelZ: float64;
+   childId: ChildId;
+   deviceId: DeviceId;
+   gsr: float64;
+   gyroX: float64;
+   gyroY: float64;
+   gyroZ: float64;
+   hrv: float64;
+   id: ReadingId;
+   motionIntensity: float64;
+   ppg: float64;
+   stressLevel: float64;
+   timestamp: Timestamp;
+ };
+type SensorPayload = 
+ record {
+   accelX: float64;
+   accelY: float64;
+   accelZ: float64;
+   deviceId: DeviceId;
+   gsr: float64;
+   gyroX: float64;
+   gyroY: float64;
+   gyroZ: float64;
+   hrv: float64;
+   motionIntensity: float64;
+   ppg: float64;
+   stressLevel: float64;
+   timestamp: Timestamp;
+ };
+type ReadingId = nat;
+type EmotionResult = 
+ record {
+   careSuggestions: vec text;
+   childId: ChildId;
+   confidence: float64;
+   emotionState: text;
+   id: EmotionId;
+   rawResponse: text;
+   readingId: ReadingId;
+   timestamp: Timestamp;
+ };
+type EmotionId = nat;
+type DeviceId = text;
+type ChildSummary = 
+ record {
+   id: ChildId;
+   latestEmotion: opt text;
+   latestMotionIntensity: opt float64;
+   latestStressLevel: opt float64;
+   latestTimestamp: opt Timestamp;
+   name: text;
+ };
+type ChildProfile = 
+ record {
+   age: nat;
+   caregiverId: principal;
+   createdAt: Timestamp;
+   deviceId: DeviceId;
+   id: ChildId;
+   name: text;
+ };
+type ChildId = nat;
+type ChildDetail = 
+ record {
+   emotionHistory: vec EmotionResult;
+   profile:
+    record {
+      age: nat;
+      caregiverId: principal;
+      createdAt: Timestamp;
+      deviceId: DeviceId;
+      id: ChildId;
+      name: text;
+    };
+   recentReadings: vec SensorReading;
+ };
+type Alert = 
+ record {
+   childId: ChildId;
+   childName: text;
+   emotionState: text;
+   stressLevel: float64;
+   timestamp: Timestamp;
+ };
+service : {
+  assignRole: (user: principal, role: variant {
+                                        admin;
+                                        user;
+                                      }) -> ();
+  createChild: (name: text, age: nat, deviceId: DeviceId) -> (ChildProfile);
+  deleteChild: (childId: ChildId) -> (bool);
+  getAlerts: () -> (vec Alert) query;
+  getChild: (childId: ChildId) -> (opt ChildProfile) query;
+  getChildDetail: (childId: ChildId) -> (opt ChildDetail) query;
+  getEmotionHistory: (childId: ChildId) -> (vec EmotionResult) query;
+  getMyChildren: () -> (vec ChildSummary) query;
+  getMyRole: () -> (opt variant {
+                          admin;
+                          user;
+                        }) query;
+  getSensorReadings: (childId: ChildId, fromTimestamp: Timestamp,
+   toTimestamp: Timestamp) -> (vec SensorReading) query;
+  ingestSensorData: (payload: SensorPayload) -> (EmotionResult);
+  register: () -> ();
+  updateChild: (childId: ChildId, name: text, age: nat, deviceId:
+   DeviceId) -> (bool);
+}
